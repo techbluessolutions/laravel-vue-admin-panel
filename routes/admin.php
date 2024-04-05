@@ -9,7 +9,7 @@ Route::group([
     'as' => 'admin.',
 ], function () {
     Route::get('/', function () {
-        return Inertia::render('Dashboard');
+        return Inertia::render('Admin/Dashboard');
     })->name('dashboard');    
     Route::resource('user', 'UserController');
     Route::resource('role', 'RoleController');

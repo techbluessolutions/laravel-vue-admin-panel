@@ -64,7 +64,9 @@ class MenuItemController extends Controller
         $menu->menuItems()->create($request->except(['roles']));
 
         $roles = $request->roles ?? [];
-        $menu->assignRole($roles);
+        if(!empty($roles)) {
+            $menu->assignRole($roles);
+        }
 
         return redirect()->route('admin.menu.item.index', $menu->id)
             ->with('message', 'Menu created successfully.');

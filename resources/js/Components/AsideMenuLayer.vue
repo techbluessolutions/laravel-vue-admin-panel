@@ -1,40 +1,36 @@
 <script setup>
-import { router } from '@inertiajs/vue3'
 import { mdiLogout, mdiClose } from '@mdi/js'
 import { computed } from 'vue'
-import { useLayoutStore } from '@/Stores/layout.js'
-import { useStyleStore } from '@/Stores/style.js'
 import AsideMenuList from '@/Components/AsideMenuList.vue'
 import AsideMenuItem from '@/Components/AsideMenuItem.vue'
 import BaseIcon from '@/Components/BaseIcon.vue'
 
 defineProps({
   menu: {
-    type: Object,
-    default: () => {}
+    type: Array,
+    required: true
   }
 })
 
-const emit = defineEmits(['menu-click'])
-
-const layoutStore = useLayoutStore()
-
-const styleStore = useStyleStore()
+const emit = defineEmits(['menu-click', 'aside-lg-close-click'])
 
 const logoutItem = computed(() => ({
   name: 'Logout',
   icon: mdiLogout,
   color: 'info',
-  link: '#'
+  isLogout: true
 }))
-
-const logoutItemClick = () => {
-  router.post(route('logout'))
-}
 
 const menuClick = (event, item) => {
   emit('menu-click', event, item)
 }
+
+const asideLgCloseClick = (event) => {
+  emit('aside-lg-close-click', event)
+}
+
+const appName = import.meta.env.VITE_APP_NAME || 'Vue Admin';
+
 </script>
 
 <template>
@@ -42,41 +38,23 @@ const menuClick = (event, item) => {
     id="aside"
     class="lg:py-2 lg:pl-2 w-60 fixed flex z-40 top-0 h-screen transition-position overflow-hidden"
   >
-    <div
-      :class="styleStore.asideStyle"
-      class="lg:rounded-xl flex-1 flex flex-col overflow-hidden dark:bg-slate-900"
-    >
-      <div
-        :class="styleStore.asideBrandStyle"
-        class="flex flex-row h-14 items-center justify-between dark:bg-slate-900"
-      >
+    <div class="aside lg:rounded-2xl flex-1 flex flex-col overflow-hidden dark:bg-slate-900">
+      <div class="aside-brand flex flex-row h-14 items-center justify-between dark:bg-slate-900">
         <div class="text-center flex-1 lg:text-left lg:pl-6 xl:text-center xl:pl-0">
-          <b class="font-black">One</b>
+          <b class="font-black">{{appName}}</b>
         </div>
-        <button 
-          class="hidden lg:inline-block xl:hidden p-3"
-          @click.prevent="layoutStore.isAsideLgActive = false"
-        >
-          <BaseIcon
-            :path="mdiClose"
-          />
+        <button class="hidden lg:inline-block xl:hidden p-3" @click.prevent="asideLgCloseClick">
+          <BaseIcon :path="mdiClose" />
         </button>
       </div>
       <div
-        :class="styleStore.darkMode ? 'aside-scrollbars-[slate]' : styleStore.asideScrollbarsStyle" 
-        class="flex-1 overflow-y-auto overflow-x-hidden"
+        class="flex-1 overflow-y-auto overflow-x-hidden aside-scrollbars dark:aside-scrollbars-[slate]"
       >
-        <AsideMenuList
-          :menu="menu"
-          @menu-click="menuClick"
-        />
+        <AsideMenuList :menu="menu" @menu-click="menuClick" />
       </div>
 
       <ul>
-        <AsideMenuItem
-          :item="logoutItem"
-          @menu-click="logoutItemClick"
-        />
+        <AsideMenuItem :item="logoutItem" @menu-click="menuClick" />
       </ul>
     </div>
   </aside>

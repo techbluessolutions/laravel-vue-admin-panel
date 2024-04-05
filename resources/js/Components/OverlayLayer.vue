@@ -1,26 +1,26 @@
 <script setup>
-import { useStyleStore } from '@/Stores/style.js'
-
 defineProps({
   zIndex: {
     type: String,
     default: 'z-50'
+  },
+  type: {
+    type: String,
+    default: 'flex'
   }
 })
 
 const emit = defineEmits(['overlay-click'])
 
-const overlayClick = event => {
+const overlayClick = (event) => {
   emit('overlay-click', event)
 }
-
-const styleStore = useStyleStore()
 </script>
 
 <template>
   <div
-    class="flex items-center flex-col justify-center overflow-hidden fixed inset-0"
-    :class="zIndex"
+    :class="[type, zIndex]"
+    class="items-center flex-col justify-center overflow-hidden fixed inset-0"
   >
     <transition
       enter-active-class="transition duration-150 ease-in"
@@ -31,8 +31,7 @@ const styleStore = useStyleStore()
       leave-to-class="opacity-0"
     >
       <div
-        class="absolute inset-0 bg-gradient-to-tr opacity-90 dark:from-gray-700 dark:via-gray-900 dark:to-gray-700"
-        :class="styleStore.overlayStyle"
+        class="overlay absolute inset-0 bg-gradient-to-tr opacity-90 dark:from-gray-700 dark:via-gray-900 dark:to-gray-700"
         @click="overlayClick"
       />
     </transition>

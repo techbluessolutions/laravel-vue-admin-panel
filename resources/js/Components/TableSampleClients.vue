@@ -1,7 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
 import { useMainStore } from '@/Stores/main'
-import { useStyleStore } from '@/Stores/style'
 import { mdiEye, mdiTrashCan } from '@mdi/js'
 import CardBoxModal from '@/Components/CardBoxModal.vue'
 import TableCheckboxCell from '@/Components/TableCheckboxCell.vue'
@@ -13,8 +12,6 @@ import UserAvatar from '@/Components/UserAvatar.vue'
 defineProps({
   checkable: Boolean
 })
-
-const styleStore = useStyleStore()
 
 const mainStore = useMainStore()
 
@@ -191,8 +188,8 @@ const checked = (isChecked, client) => {
           :key="page"
           :active="page === currentPage"
           :label="page + 1"
+          :color="page === currentPage ? 'lightDark' : 'whiteDark'"
           small
-          :outline="styleStore.darkMode"
           @click="currentPage = page"
         />
       </BaseButtons>

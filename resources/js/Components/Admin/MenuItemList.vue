@@ -37,7 +37,6 @@ const props = defineProps({
                 :path="item.icon"
                 class="flex-none"
                 :class="activeInactiveStyle"
-                w="w-16"
                 :size="18"
               />
               {{ item.name }}

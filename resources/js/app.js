@@ -1,48 +1,40 @@
-import '../css/main.css';
-
-import { createPinia } from 'pinia'
-import { useStyleStore } from '@/Stores/style.js'
-import { useLayoutStore } from '@/Stores/layout.js'
-
-import { darkModeKey, styleKey } from '@/config.js'
+import './bootstrap';
+import '../css/app.css';
 
 import { createApp, h } from 'vue';
 import { createInertiaApp, router } from '@inertiajs/vue3';
+import { createPinia } from 'pinia'
+import { useDarkModeStore } from '@/Stores/darkMode.js'
+import { useMainStore } from '@/Stores/main.js'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
-import { ZiggyVue } from '../../vendor/tightenco/ziggy/dist/vue.m';
+import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
-const appName = window.document.getElementsByTagName('title')[0]?.innerText || 'Laravel';
+const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
-const pinia = createPinia()
+const pinia = createPinia();
 
 createInertiaApp({
-    progress: {
-      color: '#4B5563',
-    },
     title: (title) => `${title} - ${appName}`,
     resolve: (name) => resolvePageComponent(`./Pages/${name}.vue`, import.meta.glob('./Pages/**/*.vue')),
     setup({ el, App, props, plugin }) {
         return createApp({ render: () => h(App, props) })
-            .use(plugin)
-            .use(pinia)
+            .use(plugin)    
             .use(ZiggyVue, Ziggy)
             .mount(el);
     },
+    progress: {
+        color: '#4B5563',
+    },
 });
 
-const styleStore = useStyleStore(pinia)
-const layoutStore = useLayoutStore(pinia)
+// Init main store
+const mainStore = useMainStore(pinia)
 
-/* App style */
-styleStore.setStyle(localStorage[styleKey] ?? 'basic')
+const darkModeStore = useDarkModeStore(pinia)
 
-/* Dark mode */
-if ((!localStorage[darkModeKey] && window.matchMedia('(prefers-color-scheme: dark)').matches) || localStorage[darkModeKey] === '1') {
-  styleStore.setDarkMode(true)
+if (
+   (!localStorage['darkMode'] && window.matchMedia('(prefers-color-scheme: dark)').matches) ||
+   localStorage['darkMode'] === '1'
+ ) {
+   darkModeStore.set(true)
 }
-
-/* Collapse mobile aside menu on route change */
-router.on('navigate', (event) => {
-  layoutStore.isAsideMobileExpanded = false
-  layoutStore.isAsideLgActive = false
-})
