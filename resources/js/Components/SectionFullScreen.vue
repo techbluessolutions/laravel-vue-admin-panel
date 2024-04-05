@@ -1,6 +1,6 @@
 <script setup>
 import { computed } from 'vue'
-import { useStyleStore } from '@/Stores/style'
+import { useDarkModeStore } from '@/Stores/darkMode.js'
 import { gradientBgPurplePink, gradientBgDark, gradientBgPinkRed } from '@/colors'
 
 const props = defineProps({
@@ -12,7 +12,7 @@ const props = defineProps({
 })
 
 const colorClass = computed(() => {
-  if (useStyleStore().darkMode) {
+  if (useDarkModeStore().isEnabled) {
     return gradientBgDark
   }
 

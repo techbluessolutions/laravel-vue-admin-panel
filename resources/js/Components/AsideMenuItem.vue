@@ -1,7 +1,6 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
-import { useStyleStore } from '@/Stores/style.js'
 import { mdiMinus, mdiPlus } from '@mdi/js'
 import { getButtonColor } from '@/colors.js'
 import BaseIcon from '@/Components/BaseIcon.vue'
@@ -21,22 +20,20 @@ const itemHref = computed(() => (props.item && props.item.link) ? props.item.lin
 
 const emit = defineEmits(['menu-click', 'dropdown-active'])
 
-const styleStore = useStyleStore()
-
 const hasColor = computed(() => props.item && props.item.color)
 
-const asideMenuItemActiveStyle = computed(() => hasColor.value ? '' : styleStore.asideMenuItemActiveStyle)
+const asideMenuItemActiveStyle = computed(() =>
+  hasColor.value ? '' : 'aside-menu-item-active font-bold'
+)
 
 const isDropdownActive = ref(false)
 
-const componentClass = computed(() => (
-  [
-    props.isDropdownList ? 'py-3 px-6 text-sm' : 'py-3 px-6',
-    hasColor.value
-      ? getButtonColor(props.item.color, false, true)
-      : styleStore.asideMenuItemStyle
-  ]
-))
+const componentClass = computed(() => [
+  props.isDropdownList ? 'py-3 px-6 text-sm' : 'py-3',
+  hasColor.value
+    ? getButtonColor(props.item.color, false, true)
+    : `aside-menu-item dark:text-slate-300 dark:hover:text-white`
+])
 
 const hasDropdown = computed(() => props.item.children && props.item.children.length)
 
@@ -56,7 +53,7 @@ const activeInactiveStyle = computed(
   () => {
     if(props.item.link && url === props.item.link) {
       emit('dropdown-active', true)
-      return styleStore.asideMenuItemActiveStyle
+      return asideMenuItemActiveStyle.value
     }
     else {
       return ''
@@ -71,7 +68,7 @@ const activeInactiveStyle = computed(
       :is="itemHref ? Link : 'div'"
       :href="itemHref"
       :target="item.target ?? null"
-      class="flex cursor-pointer dark:text-slate-300 dark:hover:text-white"
+      class="flex cursor-pointer"
       :class="componentClass"
       @click="menuClick"
     >
@@ -85,7 +82,7 @@ const activeInactiveStyle = computed(
       />
       <span
         class="grow text-ellipsis line-clamp-1"
-        :class="activeInactiveStyle"
+        :class="[{ 'pr-12': !hasDropdown }, activeInactiveStyle]"
       >{{ item.name }}</span>
       <BaseIcon
         v-if="hasDropdown"
@@ -98,7 +95,7 @@ const activeInactiveStyle = computed(
     <AsideMenuList
       v-if="hasDropdown"
       :menu="item.children"
-      :class="[ styleStore.asideMenuDropdownStyle, isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden' ]"
+      :class="['aside-menu-dropdown', isDropdownActive ? 'block dark:bg-slate-800/50' : 'hidden']"
       is-dropdown-list
       @dropdown-active="dropdownActive"
     />
