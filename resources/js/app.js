@@ -5,7 +5,6 @@ import { createApp, h } from 'vue';
 import { createInertiaApp, router } from '@inertiajs/vue3';
 import { createPinia } from 'pinia'
 import { useDarkModeStore } from '@/Stores/darkMode.js'
-import { useMainStore } from '@/Stores/main.js'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { ZiggyVue } from '../../vendor/tightenco/ziggy';
 
@@ -23,12 +22,9 @@ createInertiaApp({
             .mount(el);
     },
     progress: {
-        color: '#4B5563',
+        color: '#0076ff',
     },
 });
-
-// Init main store
-const mainStore = useMainStore(pinia)
 
 const darkModeStore = useDarkModeStore(pinia)
 
