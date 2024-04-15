@@ -1,10 +1,8 @@
 <script setup>
-import { Head, Link, useForm } from "@inertiajs/vue3"
+import { Head } from "@inertiajs/vue3"
 import {
   mdiLink,
   mdiPlus,
-  mdiSquareEditOutline,
-  mdiTrashCan,
   mdiAlertBoxOutline,
   mdiArrowLeftBoldOutline
 } from "@mdi/js"
@@ -31,14 +29,6 @@ const props = defineProps({
     default: () => ({}),
   },
 })
-
-const formDelete = useForm({})
-
-function destroy(id) {
-  if (confirm("Are you sure you want to delete?")) {
-    formDelete.delete(route("admin.menu.item.destroy", {menu: props.menu.id, item: id}))
-  }
-}
 
 </script>
 

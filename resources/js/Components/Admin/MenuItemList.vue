@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from "@inertiajs/vue3"
+import { useForm } from "@inertiajs/vue3"
 import BaseButton from "@/Components/BaseButton.vue"
 import BaseButtons from "@/Components/BaseButtons.vue"
 import BaseIcon from '@/Components/BaseIcon.vue'
@@ -26,6 +26,15 @@ const props = defineProps({
     default: 0
   },
 })
+
+const formDelete = useForm({})
+
+function destroy(id) {
+  if (confirm("Are you sure you want to delete?")) {
+    formDelete.delete(route("admin.menu.item.destroy", {menu: props.menu.id, item: id}))
+  }
+}
+
 </script>
 
 <template>
@@ -36,7 +45,6 @@ const props = defineProps({
                 v-if="item.icon"
                 :path="item.icon"
                 class="flex-none"
-                :class="activeInactiveStyle"
                 :size="18"
               />
               {{ item.name }}
