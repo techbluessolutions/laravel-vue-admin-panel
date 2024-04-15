@@ -1,5 +1,5 @@
 <script setup>
-import { Link } from "@inertiajs/vue3"
+import { useForm } from "@inertiajs/vue3"
 import BaseButton from "@/Components/BaseButton.vue"
 import BaseButtons from "@/Components/BaseButtons.vue"
 import {
@@ -25,6 +25,14 @@ const props = defineProps({
     default: 0
   },
 })
+
+const formDelete = useForm({})
+
+function destroy(id) {
+  if (confirm("Are you sure you want to delete?")) {
+    formDelete.delete(route("admin.category.type.item.destroy", {type: props.categoryType.id, item: id}))
+  }
+}
 </script>
 
 <template>
