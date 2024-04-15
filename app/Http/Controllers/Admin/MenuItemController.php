@@ -49,7 +49,7 @@ class MenuItemController extends Controller
     public function create(Menu $menu)
     {
         $itemOptions = MenuItem::selectOptions($menu->id, null, true);
-        $roles = Role::all()->pluck('name', 'id');
+        $roles = Role::all()->pluck('name', 'name');
 
         return Inertia::render('Admin/Menu/Item/Create', compact('menu', 'itemOptions', 'roles'));
     }
@@ -64,7 +64,7 @@ class MenuItemController extends Controller
         $item = $menu->menuItems()->create($request->except(['roles']));
 
         $roles = $request->roles ?? [];
-        $item->assignRole(array_map('intval', $roles));
+        $item->assignRole($roles);
 
         return redirect()->route('admin.menu.item.index', $menu->id)
             ->with('message', 'Menu Item created successfully.');
@@ -78,8 +78,8 @@ class MenuItemController extends Controller
     public function edit(Menu $menu, MenuItem $item)
     {
         $itemOptions = MenuItem::selectOptions($menu->id, $item->parent_id ?? $item->id);
-        $roles = Role::all()->pluck('name', 'id');
-        $itemHasRoles = array_column(json_decode($item->roles, true), 'id');
+        $roles = Role::all()->pluck('name', 'name');
+        $itemHasRoles = array_column(json_decode($item->roles, true), 'name');
 
         return Inertia::render('Admin/Menu/Item/Edit', compact('menu', 'item', 'itemOptions', 'roles', 'itemHasRoles'));
     }
@@ -94,7 +94,7 @@ class MenuItemController extends Controller
         $item->update($request->except(['roles']));
 
         $roles = $request->roles ?? [];
-        $item->syncRoles(array_map('intval', $roles));
+        $item->syncRoles($roles);
 
         return redirect()->route('admin.menu.item.index', $menu->id)
             ->with('message', 'Menu Item updated successfully.');
