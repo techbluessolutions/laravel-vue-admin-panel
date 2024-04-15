@@ -61,15 +61,13 @@ class MenuItemController extends Controller
      */
     public function store(StoreMenuItemRequest $request, Menu $menu)
     {
-        $menu->menuItems()->create($request->except(['roles']));
+        $item = $menu->menuItems()->create($request->except(['roles']));
 
         $roles = $request->roles ?? [];
-        if(!empty($roles)) {
-            $menu->assignRole($roles);
-        }
+        $item->assignRole(array_map('intval', $roles));
 
         return redirect()->route('admin.menu.item.index', $menu->id)
-            ->with('message', 'Menu created successfully.');
+            ->with('message', 'Menu Item created successfully.');
     }
 
     /**
@@ -96,7 +94,7 @@ class MenuItemController extends Controller
         $item->update($request->except(['roles']));
 
         $roles = $request->roles ?? [];
-        $item->syncRoles($roles);
+        $item->syncRoles(array_map('intval', $roles));
 
         return redirect()->route('admin.menu.item.index', $menu->id)
             ->with('message', 'Menu Item updated successfully.');
