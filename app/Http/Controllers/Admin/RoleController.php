@@ -98,8 +98,8 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
-        $permissions = Permission::all()->pluck('name', 'id');
-        $roleHasPermissions = array_column(json_decode($role->permissions, true), 'id');
+        $permissions = Permission::all()->pluck('name', 'name');
+        $roleHasPermissions = array_column(json_decode($role->permissions, true), 'name');
 
         return Inertia::render('Admin/Role/Show', [
             'role' => $role,
@@ -115,8 +115,8 @@ class RoleController extends Controller
      */
     public function edit(Role $role)
     {
-        $permissions = Permission::all()->pluck('name', 'id');
-        $roleHasPermissions = array_column(json_decode($role->permissions, true), 'id');
+        $permissions = Permission::all()->pluck('name', 'name');
+        $roleHasPermissions = array_column(json_decode($role->permissions, true), 'name');
 
         return Inertia::render('Admin/Role/Edit', [
             'role' => $role,
