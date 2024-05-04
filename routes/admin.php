@@ -1,11 +1,12 @@
 <?php
 
+use App\Http\Middleware\HasAccessAdmin;
 use Inertia\Inertia;
 
 Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
     'prefix' => config('admin.prefix'),
-    'middleware' => ['auth'],
+    'middleware' => ['auth', HasAccessAdmin::class],
     'as' => 'admin.',
 ], function () {
     Route::get('/', function () {
