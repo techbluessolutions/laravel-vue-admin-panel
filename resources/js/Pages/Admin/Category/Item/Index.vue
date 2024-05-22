@@ -1,7 +1,7 @@
 <script setup>
 import { Head } from "@inertiajs/vue3"
 import {
-  mdiLink,
+  mdiSelectGroup,
   mdiPlus,
   mdiAlertBoxOutline,
   mdiArrowLeftBoldOutline
@@ -37,7 +37,7 @@ const props = defineProps({
     <Head title="Categories" />
     <SectionMain>
       <SectionTitleLineWithButton
-        :icon="mdiLink"
+        :icon="mdiSelectGroup"
         title="Categories"
         main
       >

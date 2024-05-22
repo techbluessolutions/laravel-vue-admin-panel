@@ -1,9 +1,8 @@
 <script setup>
 import { Head, Link, useForm } from "@inertiajs/vue3"
 import {
-  mdiSelectGroup,
+  mdiMultimedia,
   mdiPlus,
-  mdiCogOutline,
   mdiSquareEditOutline,
   mdiTrashCan,
   mdiAlertBoxOutline,
@@ -19,7 +18,7 @@ import Pagination from "@/Components/Admin/Pagination.vue"
 import Sort from "@/Components/Admin/Sort.vue"
 
 const props = defineProps({
-  categoryTypes: {
+  items: {
     type: Object,
     default: () => ({}),
   },
@@ -41,23 +40,23 @@ const formDelete = useForm({})
 
 function destroy(id) {
   if (confirm("Are you sure you want to delete?")) {
-    formDelete.delete(route("admin.category.type.destroy", id))
+    formDelete.delete(route("admin.media.destroy", id))
   }
 }
 </script>
 
 <template>
   <LayoutAuthenticated>
-    <Head title="category Types" />
+    <Head title="Media" />
     <SectionMain>
       <SectionTitleLineWithButton
-        :icon="mdiSelectGroup"
-        title="Category Types"
+        :icon="mdiMultimedia"
+        title="Media"
         main
       >
         <BaseButton
           v-if="can.delete"
-          :route-name="route('admin.category.type.create')"
+          :route-name="route('admin.media.create')"
           :icon="mdiPlus"
           label="Add"
           color="info"
@@ -74,7 +73,7 @@ function destroy(id) {
         {{ $page.props.flash.message }}
       </NotificationBar>
       <CardBox class="mb-6" has-table>
-        <form @submit.prevent="form.get(route('admin.category.type.index'))">
+        <form @submit.prevent="form.get(route('admin.media.index'))">
           <div class="py-2 flex">
             <div class="flex pl-4">
               <input
@@ -105,39 +104,54 @@ function destroy(id) {
         <table>
           <thead>
             <tr>
+              <th>File</th>
               <th>
                 <Sort label="Name" attribute="name" />
               </th>
-              <th>
-                Description
-              </th>
-              <th v-if="can.edit || can.delete || can.manage">Actions</th>
+              <th>Type</th>
+              <th>Created</th>
+              <th v-if="can.edit || can.delete">Actions</th>
             </tr>
           </thead>
 
           <tbody>
-            <tr v-for="categoryType in categoryTypes.data" :key="categoryType.id">
-              <td data-label="Name">
-                  {{ categoryType.name }}
+            <tr v-for="media in items.data" :key="media.id">
+              <td data-label="File">
+                <div class="w-32 rounded">
+                  <div v-if="media.aggregateType !== 'image'"  v-html="media.mediaTypeIcon">
+                  </div>
+                  <div v-else>
+                    <img :src="media.url" :alt="media.alt" class="block h-auto w-full max-w-full bg-gray-100 dark:bg-slate-800" />
+                  </div>
+                </div>
               </td>
-               <td data-label="Description">
-                  {{ categoryType.description }}
+              <td data-label="Name">
+                <Link
+                  :href="route('admin.media.show', media.id)"
+                  class="
+                    no-underline
+                    hover:underline
+                    text-cyan-600
+                    dark:text-cyan-400
+                  "
+                >
+                  {{ media.filename }}
+                </Link>
+              </td>
+              <td data-label="variant_name">
+                {{ media.type }}
+              </td>
+              <td data-label="created_at">
+                {{ new Date(media.createdAt).toLocaleString() }}
               </td>
               <td
-                v-if="can.edit || can.delete || can.manage"
+                v-if="can.edit || can.delete"
                 class="before:hidden lg:w-1 whitespace-nowrap"
               >
                 <BaseButtons type="justify-start lg:justify-end" no-wrap>
                   <BaseButton
-                    v-if="can.manage"
-                    :route-name="route('admin.category.type.item.index', categoryType.id)"
-                    color="warning"
-                    :icon="mdiCogOutline "
-                    small
-                  />
-                  <BaseButton
                     v-if="can.edit"
-                    :route-name="route('admin.category.type.edit', categoryType.id)"
+                    :route-name="route('admin.media.edit', media.id)"
                     color="info"
                     :icon="mdiSquareEditOutline"
                     small
@@ -147,7 +161,7 @@ function destroy(id) {
                     color="danger"
                     :icon="mdiTrashCan"
                     small
-                    @click="destroy(categoryType.id)"
+                    @click="destroy(media.id)"
                   />
                 </BaseButtons>
               </td>
@@ -155,7 +169,7 @@ function destroy(id) {
           </tbody>
         </table>
         <div class="py-4">
-          <Pagination :data="categoryTypes" />
+          <Pagination :data="items" />
         </div>
       </CardBox>
     </SectionMain>

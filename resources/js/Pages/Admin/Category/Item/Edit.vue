@@ -1,7 +1,7 @@
 <script setup>
 import { Head, useForm } from "@inertiajs/vue3"
 import {
-  mdiMenu,
+  mdiSelectGroup,
   mdiArrowLeftBoldOutline
 } from "@mdi/js"
 import LayoutAuthenticated from "@/Layouts/LayoutAuthenticated.vue"
@@ -45,7 +45,7 @@ const form = useForm({
     <Head title="Update Category" />
     <SectionMain>
       <SectionTitleLineWithButton
-        :icon="mdiMenu"
+        :icon="mdiSelectGroup"
         title="Update Category"
         main
       >
