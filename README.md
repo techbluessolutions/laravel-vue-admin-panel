@@ -31,6 +31,7 @@
 - `./vendor/bin/sail npm run dev`
 - `./vendor/bin/sail artisan vendor:publish --tag=admin-core`
 - `./vendor/bin/sail artisan migrate --seed --seeder=AdminCoreSeeder`
+- `./vendor/bin/sail artisan storage:link`
 - Now open http://localhost/
 
 ### Without Docker Desktop
@@ -40,6 +41,7 @@
 - Create a new MYSQL database and update database details in `.env` file
 - `php artisan vendor:publish --tag=admin-core`
 - `php artisan migrate --seed --seeder=AdminCoreSeeder`
+- `php artisan storage:link`
 - `npm install`
 - `npm run dev`
 - `php artisan serve`
