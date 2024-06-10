@@ -10,13 +10,15 @@ import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.
 import CardBox from "@/Components/CardBox.vue"
 import FormField from '@/Components/FormField.vue'
 import FormControl from '@/Components/FormControl.vue'
+import FormCheckRadio from '@/Components/FormCheckRadio.vue'
 import BaseButton from '@/Components/BaseButton.vue'
 import BaseButtons from '@/Components/BaseButtons.vue'
 
 const form = useForm({
   name: '',
   machine_name: '',
-  description: ''
+  description: '',
+  is_flat: ''
 })
 </script>
 
@@ -86,6 +88,17 @@ const form = useForm({
               {{ form.errors.description }}
             </div>
           </FormControl>
+        </FormField>
+        <FormField
+          :class="{ 'text-red-400': form.errors.is_flat }"
+        >
+          <FormCheckRadio
+            v-model="form.is_flat"
+            type="checkbox"
+            name="form.is_flat"
+            label="Use Flat Category"
+            inputValue="1"
+          />
         </FormField>
         <template #footer>
           <BaseButtons>

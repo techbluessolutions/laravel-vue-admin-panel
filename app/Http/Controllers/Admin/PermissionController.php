@@ -4,21 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
-use BalajiDharma\LaravelAdminCore\Requests\StorePermissionRequest;
-use BalajiDharma\LaravelAdminCore\Requests\UpdatePermissionRequest;
+use BalajiDharma\LaravelAdminCore\Actions\Permission\PermissionCreateAction;
+use BalajiDharma\LaravelAdminCore\Actions\Permission\PermissionUpdateAction;
+use BalajiDharma\LaravelAdminCore\Data\Permission\PermissionCreateData;
+use BalajiDharma\LaravelAdminCore\Data\Permission\PermissionUpdateData;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class PermissionController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:permission list', ['only' => ['index', 'show']]);
-        $this->middleware('can:permission create', ['only' => ['create', 'store']]);
-        $this->middleware('can:permission edit', ['only' => ['edit', 'update']]);
-        $this->middleware('can:permission delete', ['only' => ['destroy']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -26,6 +20,7 @@ class PermissionController extends Controller
      */
     public function index()
     {
+        $this->authorize('adminViewAny', Permission::class);
         $permissions = (new Permission)->newQuery();
 
         if (request()->has('search')) {
@@ -66,6 +61,7 @@ class PermissionController extends Controller
      */
     public function create()
     {
+        $this->authorize('adminCreate', Permission::class);
         return Inertia::render('Admin/Permission/Create');
     }
 
@@ -74,9 +70,10 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StorePermissionRequest $request)
+    public function store(PermissionCreateData $data, PermissionCreateAction $permissionCreateAction)
     {
-        Permission::create($request->all());
+        $this->authorize('adminCreate', Permission::class);
+        $permissionCreateAction->handle($data);
 
         return redirect()->route('admin.permission.index')
             ->with('message', __('Permission created successfully.'));
@@ -89,6 +86,7 @@ class PermissionController extends Controller
      */
     public function show(Permission $permission)
     {
+        $this->authorize('adminView', $permission);
         return Inertia::render('Admin/Permission/Show', [
             'permission' => $permission,
         ]);
@@ -101,6 +99,7 @@ class PermissionController extends Controller
      */
     public function edit(Permission $permission)
     {
+        $this->authorize('adminUpdate', $permission);
         return Inertia::render('Admin/Permission/Edit', [
             'permission' => $permission,
         ]);
@@ -111,9 +110,10 @@ class PermissionController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdatePermissionRequest $request, Permission $permission)
+    public function update(PermissionUpdateData $data, Permission $permission, PermissionUpdateAction $permissionUpdateAction)
     {
-        $permission->update($request->all());
+        $this->authorize('adminUpdate', $permission);
+        $permissionUpdateAction->handle($data, $permission);
 
         return redirect()->route('admin.permission.index')
             ->with('message', __('Permission updated successfully.'));
@@ -126,6 +126,7 @@ class PermissionController extends Controller
      */
     public function destroy(Permission $permission)
     {
+        $this->authorize('adminDelete', $permission);
         $permission->delete();
 
         return redirect()->route('admin.permission.index')
