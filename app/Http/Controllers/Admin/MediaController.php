@@ -14,14 +14,6 @@ use Inertia\Inertia;
 
 class MediaController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:media list', ['only' => ['index']]);
-        $this->middleware('can:media create', ['only' => ['create', 'store']]);
-        $this->middleware('can:media edit', ['only' => ['edit', 'update']]);
-        $this->middleware('can:media delete', ['only' => ['destroy']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -29,6 +21,7 @@ class MediaController extends Controller
      */
     public function index()
     {
+        $this->authorize('adminViewAny', Media::class);
         $mediaItems = (new Media)->newQuery();
         $mediaItems->whereIsOriginal();
         if (request()->has('search')) {
@@ -69,6 +62,7 @@ class MediaController extends Controller
      */
     public function create()
     {
+        $this->authorize('adminCreate', Media::class);
         $typeOptions = media_type_as_options();
         return Inertia::render('Admin/Media/Create', [
             'typeOptions' => $typeOptions,
@@ -82,6 +76,7 @@ class MediaController extends Controller
      */
     public function store(MediaCreateData $data, MediaCreateAction $mediaCreateAction)
     {
+        $this->authorize('adminCreate', Media::class);
         $mediaCreateAction->handle($data);
 
         return redirect()->route('admin.media.index')
@@ -96,6 +91,7 @@ class MediaController extends Controller
     public function show($id)
     {
         $media = Media::findOrFail($id);
+        $this->authorize('adminView', $media);
 
         return Inertia::render('Admin/Media/Show', [
             'media' => MediaData::from($media),
@@ -110,6 +106,7 @@ class MediaController extends Controller
     public function edit($id)
     {
         $media = Media::findOrFail($id);
+        $this->authorize('adminUpdate', $media);
         $typeOptions = media_type_as_options();
 
         return Inertia::render('Admin/Media/Edit', [
@@ -127,6 +124,7 @@ class MediaController extends Controller
     public function update(MediaUpdateData $mediaUpdateData, $id, MediaUpdateAction $mediaUpdateAction)
     {
         $media = Media::findOrFail($id);
+        $this->authorize('adminUpdate', $media);
         $mediaUpdateAction->handle($mediaUpdateData, $media);
 
         return redirect()->route('admin.media.index')
@@ -141,6 +139,7 @@ class MediaController extends Controller
     public function destroy($id)
     {
         $media = Media::findOrFail($id);
+        $this->authorize('adminDelete', $media);
         $media->getAllVariantsAndSelf()->each(function (Media $variant) {
             $variant->delete();
         });

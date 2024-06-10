@@ -10,6 +10,7 @@ import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.
 import CardBox from "@/Components/CardBox.vue"
 import FormField from '@/Components/FormField.vue'
 import FormControl from '@/Components/FormControl.vue'
+import FormCheckRadio from '@/Components/FormCheckRadio.vue'
 import BaseButton from '@/Components/BaseButton.vue'
 import BaseButtons from '@/Components/BaseButtons.vue'
 
@@ -23,7 +24,8 @@ const props = defineProps({
 const form = useForm({
   _method: 'put',
   name: props.categoryType.name,
-  description: props.categoryType.description
+  description: props.categoryType.description,
+  is_flat: props.categoryType.is_flat
 })
 </script>
 
@@ -83,6 +85,17 @@ const form = useForm({
               {{ form.errors.description }}
             </div>
           </FormControl>
+        </FormField>
+        <FormField
+          :class="{ 'text-red-400': form.errors.is_flat }"
+        >
+          <FormCheckRadio
+            v-model="form.is_flat"
+            type="checkbox"
+            name="form.is_flat"
+            label="Use Flat Category"
+            inputValue="1"
+          />
         </FormField>
         <template #footer>
           <BaseButtons>

@@ -3,22 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use BalajiDharma\LaravelAdminCore\Requests\StoreCategoryTypeRequest;
-use BalajiDharma\LaravelAdminCore\Requests\UpdateCategoryTypeRequest;
+use BalajiDharma\LaravelAdminCore\Actions\CategoryType\CategoryTypeCreateAction;
+use BalajiDharma\LaravelAdminCore\Actions\CategoryType\CategoryTypeUpdateAction;
+use BalajiDharma\LaravelAdminCore\Data\CategoryType\CategoryTypeCreateData;
+use BalajiDharma\LaravelAdminCore\Data\CategoryType\CategoryTypeUpdateData;
 use BalajiDharma\LaravelCategory\Models\CategoryType;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 
 class CategoryTypeController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:category.type list', ['only' => ['index']]);
-        $this->middleware('can:category.type create', ['only' => ['create', 'store']]);
-        $this->middleware('can:category.type edit', ['only' => ['edit', 'update']]);
-        $this->middleware('can:category.type delete', ['only' => ['destroy']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -26,6 +20,7 @@ class CategoryTypeController extends Controller
      */
     public function index()
     {
+        $this->authorize('adminViewAny', CategoryType::class);
         $categoryTypes = (new CategoryType)->newQuery();
 
         if (request()->has('search')) {
@@ -66,6 +61,7 @@ class CategoryTypeController extends Controller
      */
     public function create()
     {
+        $this->authorize('adminCreate', CategoryType::class);
         return Inertia::render('Admin/Category/Type/Create');
     }
 
@@ -74,18 +70,10 @@ class CategoryTypeController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreCategoryTypeRequest $request)
+    public function store(CategoryTypeCreateData $data, CategoryTypeCreateAction $categoryTypeCreateAction)
     {
-        if (! $request->has('is_flat')) {
-            $request['is_flat'] = false;
-        }
-
-        CategoryType::create([
-            'name' => $request->name,
-            'machine_name' => $request->machine_name,
-            'description' => $request->description,
-            'is_flat' => $request->is_flat,
-        ]);
+        $this->authorize('adminCreate', CategoryType::class);
+        $categoryTypeCreateAction->handle($data);
 
         return redirect()->route('admin.category.type.index')
             ->with('message', 'Category type created successfully.');
@@ -99,6 +87,7 @@ class CategoryTypeController extends Controller
      */
     public function edit(CategoryType $type)
     {
+        $this->authorize('adminUpdate', $type);
         return Inertia::render('Admin/Category/Type/Edit', [
             'categoryType' => $type,
         ]);
@@ -110,13 +99,10 @@ class CategoryTypeController extends Controller
      * @param  \BalajiDharma\LaravelCategory\Models\CategoryType  $categoryType
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateCategoryTypeRequest $request, CategoryType $type)
+    public function update(CategoryTypeUpdateData $data, CategoryType $type, CategoryTypeUpdateAction $categoryTypeUpdateAction)
     {
-        if (! $request->has('is_flat')) {
-            $request['is_flat'] = false;
-        }
-
-        $type->update($request->all());
+        $this->authorize('adminUpdate', $type);
+        $categoryTypeUpdateAction->handle($data, $type);
 
         return redirect()->route('admin.category.type.index')
             ->with('message', 'Category type updated successfully.');

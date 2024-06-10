@@ -5,10 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Role;
 use App\Models\User;
-use BalajiDharma\LaravelAdminCore\Actions\User\CreateUser;
-use BalajiDharma\LaravelAdminCore\Actions\User\UpdateUser;
-use BalajiDharma\LaravelAdminCore\Requests\User\StoreUserRequest;
-use BalajiDharma\LaravelAdminCore\Requests\User\UpdateUserRequest;
+use BalajiDharma\LaravelAdminCore\Actions\User\UserCreateAction;
+use BalajiDharma\LaravelAdminCore\Actions\User\UserUpdateAction;
+use BalajiDharma\LaravelAdminCore\Data\User\UserCreateData;
+use BalajiDharma\LaravelAdminCore\Data\User\UserUpdateData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -17,14 +17,6 @@ use Inertia\Inertia;
 
 class UserController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('can:user list', ['only' => ['index', 'show']]);
-        $this->middleware('can:user create', ['only' => ['create', 'store']]);
-        $this->middleware('can:user edit', ['only' => ['edit', 'update']]);
-        $this->middleware('can:user delete', ['only' => ['destroy']]);
-    }
-
     /**
      * Display a listing of the resource.
      *
@@ -32,6 +24,7 @@ class UserController extends Controller
      */
     public function index()
     {
+        $this->authorize('adminViewAny', User::class);
         $users = (new User)->newQuery();
 
         if (request()->has('search')) {
@@ -72,6 +65,7 @@ class UserController extends Controller
      */
     public function create()
     {
+        $this->authorize('adminCreate', User::class);
         $roles = Role::all()->pluck('name', 'name');
 
         return Inertia::render('Admin/User/Create', [
@@ -84,9 +78,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function store(StoreUserRequest $request, CreateUser $createUser)
+    public function store(UserCreateData $data, UserCreateAction $userCreateAction)
     {
-        $createUser->handle($request->getUserData());
+        $this->authorize('adminCreate', User::class);
+        $userCreateAction->handle($data);
 
         return redirect()->route('admin.user.index')
             ->with('message', __('User created successfully.'));
@@ -99,6 +94,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
+        $this->authorize('adminView', $user);
         $roles = Role::all()->pluck('name', 'id');
         $userHasRoles = array_column(json_decode($user->roles, true), 'name');
 
@@ -116,6 +112,7 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        $this->authorize('adminUpdate', $user);
         $roles = Role::all()->pluck('name', 'name');
         $userHasRoles = array_column(json_decode($user->roles, true), 'name');
 
@@ -131,9 +128,10 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\RedirectResponse
      */
-    public function update(UpdateUserRequest $request, User $user, UpdateUser $updateUser)
+    public function update(UserUpdateData $data, User $user, UserUpdateAction $userUpdateAction)
     {
-        $updateUser->handle($request->getUserData(), $user);
+        $this->authorize('adminUpdate', $user);
+        $userUpdateAction->handle($data, $user);
 
         return redirect()->route('admin.user.index')
             ->with('message', __('User updated successfully.'));
@@ -146,6 +144,7 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $this->authorize('adminDelete', $user);
         $user->delete();
 
         return redirect()->route('admin.user.index')
