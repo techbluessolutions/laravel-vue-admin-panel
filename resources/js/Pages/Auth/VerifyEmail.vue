@@ -1,7 +1,7 @@
 <script setup>
 import { useForm, Head, Link } from '@inertiajs/vue3'
 import { computed } from 'vue'
-import LayoutGuest from '@/Layouts/LayoutGuest.vue'
+import LayoutGuest from '@/Layouts/Admin/LayoutGuest.vue'
 import SectionFullScreen from '@/Components/SectionFullScreen.vue'
 import CardBox from '@/Components/CardBox.vue'
 import FormField from '@/Components/FormField.vue'
