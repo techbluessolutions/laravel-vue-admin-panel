@@ -35,8 +35,16 @@ class HandleInertiaAdminRequests extends Middleware
             ...parent::share($request),
             'navigation' => [
                 'menu' => Menu::getMenuTree('admin', false, true),
-                'breadcrumbs' => Breadcrumbs::generate(),
+                'breadcrumbs' => $this->getBreadcrumbs($request),
             ],
         ];
+    }
+
+    protected function getBreadcrumbs(Request $request)
+    {
+        if($request->isMethod('get'))
+        {
+            return Breadcrumbs::generate();
+        }
     }
 }
