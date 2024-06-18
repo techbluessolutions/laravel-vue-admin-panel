@@ -6,7 +6,7 @@ import {
   mdiAlertBoxOutline,
   mdiArrowLeftBoldOutline
 } from "@mdi/js"
-import LayoutAuthenticated from "@/Layouts/LayoutAuthenticated.vue"
+import LayoutAuthenticated from "@/Layouts/Admin/LayoutAuthenticated.vue"
 import SectionMain from "@/Components/SectionMain.vue"
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue"
 import BaseButton from "@/Components/BaseButton.vue"

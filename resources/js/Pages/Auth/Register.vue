@@ -2,7 +2,7 @@
 import { useForm, usePage, Head } from '@inertiajs/vue3'
 import { computed } from 'vue'
 import { mdiAccount, mdiEmail, mdiFormTextboxPassword } from '@mdi/js'
-import LayoutGuest from '@/Layouts/LayoutGuest.vue'
+import LayoutGuest from '@/Layouts/Admin/LayoutGuest.vue'
 import SectionFullScreen from '@/Components/SectionFullScreen.vue'
 import CardBox from '@/Components/CardBox.vue'
 import FormCheckRadioGroup from '@/Components/FormCheckRadioGroup.vue'

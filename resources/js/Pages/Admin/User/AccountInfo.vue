@@ -18,7 +18,7 @@ import FormControl from "@/Components/FormControl.vue"
 import BaseButton from "@/Components/BaseButton.vue"
 import BaseButtons from "@/Components/BaseButtons.vue"
 import NotificationBar from "@/Components/NotificationBar.vue"
-import LayoutAuthenticated from "@/Layouts/LayoutAuthenticated.vue"
+import LayoutAuthenticated from "@/Layouts/Admin/LayoutAuthenticated.vue"
 import SectionTitleLineWithButton from "@/Components/SectionTitleLineWithButton.vue"
 
 const props = defineProps({
