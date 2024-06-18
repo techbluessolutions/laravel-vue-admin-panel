@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Middleware\HasAccessAdmin;
+use App\Http\Middleware\Admin\HandleInertiaAdminRequests;
 use Inertia\Inertia;
 
 Route::group([
     'namespace' => 'App\Http\Controllers\Admin',
     'prefix' => config('admin.prefix'),
-    'middleware' => ['auth', HasAccessAdmin::class],
+    'middleware' => ['auth', HasAccessAdmin::class, HandleInertiaAdminRequests::class],
     'as' => 'admin.',
 ], function () {
     Route::get('/', function () {
@@ -18,7 +19,9 @@ Route::group([
     Route::resource('menu', 'MenuController')->except([
         'show',
     ]);
-    Route::resource('menu.item', 'MenuItemController');
+    Route::resource('menu.item', 'MenuItemController')->except([
+        'show',
+    ]);
     Route::group([
         'prefix' => 'category',
         'as' => 'category.',

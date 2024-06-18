@@ -5,6 +5,7 @@ import { usePage, router } from '@inertiajs/vue3'
 import menuNavBar from '@/menuNavBar.js'
 import { useDarkModeStore } from '@/Stores/darkMode.js'
 import BaseIcon from '@/Components/BaseIcon.vue'
+import Breadcrumb from '@/Components/Admin/Breadcrumb.vue'
 import FormControl from '@/Components/FormControl.vue'
 import NavBar from '@/Components/NavBar.vue'
 import NavBarItemPlain from '@/Components/NavBarItemPlain.vue'
@@ -67,6 +68,7 @@ const menuClick = (event, item) => {
         @menu-click="menuClick"
         @aside-lg-close-click="isAsideLgActive = false"
       />
+      <Breadcrumb />
       <slot />
       <FooterBar />
     </div>

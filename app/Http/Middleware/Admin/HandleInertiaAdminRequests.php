@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Middleware;
+namespace App\Http\Middleware\Admin;
 
 use BalajiDharma\LaravelMenu\Models\Menu;
 use Diglactic\Breadcrumbs\Breadcrumbs;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
-class HandleInertiaRequests extends Middleware
+class HandleInertiaAdminRequests extends Middleware
 {
     /**
      * The root template that is loaded on the first page visit.
@@ -33,12 +33,10 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
-            'auth' => [
-                'user' => $request->user(),
+            'navigation' => [
+                'menu' => Menu::getMenuTree('admin', false, true),
+                'breadcrumbs' => Breadcrumbs::generate(),
             ],
-            'flash' => [
-                'message' => fn () => $request->session()->get('message'),
-            ]
         ];
     }
 }
